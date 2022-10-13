@@ -110,3 +110,6 @@ venv.bak/
 *.out
 *.zip
 *.csv
+
+# Dataset
+*.mp4
