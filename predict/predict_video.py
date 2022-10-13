@@ -29,15 +29,15 @@ parser.add_argument('--debug-mode', type=bool, default=True, help="print all set
 parser.add_argument('--dataset', default='ARID', help="path to dataset")
 parser.add_argument('--clip-length', default=16, help="define the length of each input sample.")
 parser.add_argument('--frame-interval', type=int, default=2, help="define the sampling interval between frames.")
-parser.add_argument('--task-name', type=str, default='../exps/models/ARID_UG2_2.1', help="name of current task, leave it empty for using folder name")
-parser.add_argument('--model-dir', type=str, default="./", help="set model directory.")
+parser.add_argument('--task-name', type=str, default='./ARID_UG2_2.1', help="name of current task, leave it empty for using folder name")
+parser.add_argument('--model-dir', type=str, default="../exps/models/", help="set model directory.")
 parser.add_argument('--log-file', type=str, default="./predict-arid.log", help="set logging file.")
 # device
 parser.add_argument('--gpus', type=str, default="0,1,2,3,4,5,6,7", help="define gpu id")
 # algorithm
 parser.add_argument('--network', type=str, default='r3d18', help="choose the base network")
 # evaluation
-parser.add_argument('--load-epoch', type=int, default=2, help="resume trained model")
+parser.add_argument('--load-epoch', type=int, default=5, help="resume trained model")
 parser.add_argument('--batch-size', type=int, default=4, help="batch size")
 
 #other parameters
@@ -99,7 +99,7 @@ if __name__ == '__main__':
 
 	# data iterator:
 	data_root = "../dataset/{}".format(args.dataset)
-	video_location = os.path.join(data_root, 'raw', 'test_data')
+	video_location = os.path.join(data_root, 'raw', 'validate')
 
 	normalize = transforms.Normalize(mean=input_config['mean'], std=input_config['std'])
 
@@ -116,6 +116,7 @@ if __name__ == '__main__':
 	softmax = torch.nn.Softmax(dim=1)
 	field_names = ['VideoID', 'Video', 'ClassID']
 	pred_rows = []
+	pred_acc = 0
 	pred_file = 'track1_pred.csv'
 
 	i_batch = 0
@@ -132,12 +133,14 @@ if __name__ == '__main__':
 		for i_item in range(0, outputs.shape[0]):
 			output_i = outputs[i_item,:].view(1, -1)
 			target_i = targets[i_item]
-			assert target_i == -1, "Target not -1, label should not be contained in validation/testing data"
+			# assert target_i == -1, "Target not -1, label should not be contained in validation/testing data"
 			video_subpath_i = video_subpaths[i_item]
 			_, pred_class_i = torch.topk(output_i, 1)
 			class_id_i = pred_class_i.numpy()[0][0]
 			video_id_i = int(video_subpath_i.split('.')[0])
 			pred_row = {field_names[0]: video_id_i, field_names[1]: video_subpath_i, field_names[2]: class_id_i}
+			if class_id_i == target_i:
+				pred_acc += 1
 			pred_rows.append(pred_row)
 
 		# show progress
@@ -146,8 +149,10 @@ if __name__ == '__main__':
 		i_batch += 1
 
 	# finished
+	pred_acc = pred_acc/len(video_subpaths)
 	logging.info("Prediction Finished!")
 	logging.info("Total time cost: {:.1f} sec".format(sum_batch_elapse))
+	logging.info("Prediction accuracy: {:.2f} %".format(pred_acc))
 
 	# write answer to prediction csv file and zipped
 	with open(pred_file, 'w', newline='') as csvfile:

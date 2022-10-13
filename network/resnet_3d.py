@@ -41,6 +41,59 @@ class RESNET18(nn.Module):
 
 		return h
 
+class R2PLUS1D(nn.Module):
+
+	def __init__(self, num_classes, pretrained=True, pool_first=True, **kwargs):
+		super(R2PLUS1D, self).__init__()
+
+		self.resnet = torchvision.models.video.r2plus1d_18(pretrained=False, progress=False, num_classes=num_classes, **kwargs)
+
+		###################
+		# Initialization #
+		initializer.xavier(net=self)
+
+		if pretrained:
+			pretrained_model=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pretrained/r2plus1d_18-91a641e6.pth')
+			logging.info("Network:: graph initialized, loading pretrained model: `{}'".format(pretrained_model))
+			assert os.path.exists(pretrained_model), "cannot locate: `{}'".format(pretrained_model)
+			pretrained = torch.load(pretrained_model)
+			load_state(self.resnet, pretrained)
+		else:
+			logging.info("Network:: graph initialized, use random inilization!")
+
+	def forward(self, x):
+
+		h = self.resnet(x)
+
+		return h
+
+class RESMC3(nn.Module):
+
+	def __init__(self, num_classes, pretrained=True, pool_first=True, **kwargs):
+		super(RESMC3, self).__init__()
+
+		self.resnet = torchvision.models.video.r2plus1d_18(pretrained=False, progress=False, num_classes=num_classes, **kwargs)
+
+		###################
+		# Initialization #
+		initializer.xavier(net=self)
+
+		if pretrained:
+			pretrained_model=os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pretrained/mc3_18-a90a0ba3.pth')
+			logging.info("Network:: graph initialized, loading pretrained model: `{}'".format(pretrained_model))
+			assert os.path.exists(pretrained_model), "cannot locate: `{}'".format(pretrained_model)
+			pretrained = torch.load(pretrained_model)
+			load_state(self.resnet, pretrained)
+		else:
+			logging.info("Network:: graph initialized, use random inilization!")
+
+	def forward(self, x):
+
+		h = self.resnet(x)
+
+		return h
+
+
 if __name__ == "__main__":
 	logging.getLogger().setLevel(logging.DEBUG)
 	# ---------

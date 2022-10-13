@@ -1,7 +1,7 @@
 import logging
 import torch
 
-from .resnet_3d import RESNET18  # This require Pytorch >= 1.2.0 support
+from .resnet_3d import RESNET18, R2PLUS1D, RESMC3  # This require Pytorch >= 1.2.0 support
 
 from .config import get_config
 
@@ -9,6 +9,10 @@ def get_symbol(name, print_net=False, **kwargs):
 	
 	if name.upper() == "R3D18":
 		net = RESNET18(**kwargs)
+	elif name.upper() == "R2PLUS1D":
+		net = R2PLUS1D(**kwargs)
+	elif name.upper() == "RESMC3":
+		net = RESMC3(**kwargs)
 	else:
 		logging.error("network '{}'' not implemented".format(name))
 		raise NotImplementedError()

@@ -17,7 +17,7 @@ def get_arid(data_root='./dataset/ARID', clip_length=8, train_interval=2,
 	normalize = transforms.Normalize(mean=mean, std=std)
 
 	train_sampler = sampler.RandomSampling(num=clip_length, interval=train_interval, speed=[1.0, 1.0], seed=(seed+0))
-	train = VideoIter(video_prefix=os.path.join(data_root, 'raw', 'train_data'),
+	train = VideoIter(video_prefix=os.path.join(data_root, 'raw', 'train'),
 					  csv_list=os.path.join(data_root, 'raw', 'list_cvt', 'ARID1.1_t1_train_pub.csv'),
 					  sampler=train_sampler,
 					  force_color=True,

@@ -39,7 +39,8 @@ parser.add_argument('--log-file', type=str, default="", help="set default loggin
 parser.add_argument('--gpus', type=str, default="0,1,2,3,4,5,6,7", help="define gpu id")
 
 # algorithm
-parser.add_argument('--network', type=str, default='R3D18',help="chose the base network")
+parser.add_argument('--network', type=str, default='R3D18',help="chose the base network from R3D18, R2PLUS1D and RESMC3")
+parser.add_argument('--pretrained', type=bool, default='True',help="use pretrained model")
 parser.add_argument('--resume-epoch', type=int, default=-1, help="resume train")
 
 # optimization
@@ -51,7 +52,7 @@ parser.add_argument('--lr-factor', type=float, default=0.1, help="reduce the lea
 
 # other training parameters
 parser.add_argument('--save-frequency', type=float, default=1, help="save once after N epochs")
-parser.add_argument('--end-epoch', type=int, default=2, help="maxmium number of training epoch")
+parser.add_argument('--end-epoch', type=int, default=5, help="maxmium number of training epoch")
 parser.add_argument('--random-seed', type=int, default=1, help='random seed (default: 1)')
 
 def autofill(args):
@@ -99,7 +100,8 @@ if __name__ == "__main__":
 	dataset_cfg = dataset.get_config(name=args.dataset)
 
 	# creat model with all parameters initialized
-	net, input_conf = get_symbol(name=args.network, pretrained=True, **dataset_cfg)
+	net, input_conf = get_symbol(name=args.network, pretrained=args.pretrained, **dataset_cfg)
+	# net, input_conf = get_symbol(name=args.network, pretrained=False, **dataset_cfg)
 
 	# training
 	kwargs = {}
