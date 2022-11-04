@@ -32,6 +32,7 @@ parser.add_argument('--frame-interval', type=int, default=2, help="define the sa
 parser.add_argument('--task-name', type=str, default='./ARID_UG2_2.1', help="name of current task, leave it empty for using folder name")
 parser.add_argument('--model-dir', type=str, default="../exps/models/", help="set model directory.")
 parser.add_argument('--log-file', type=str, default="./predict-arid.log", help="set logging file.")
+parser.add_argument('--data-root', type=str, default="../dataset/ARID_test_light", help="set logging file.")
 # device
 parser.add_argument('--gpus', type=str, default="0,1,2,3,4,5,6,7", help="define gpu id")
 # algorithm
@@ -98,8 +99,10 @@ if __name__ == '__main__':
 	net.load_checkpoint(epoch=args.load_epoch)
 
 	# data iterator:
-	data_root = "../dataset/{}".format(args.dataset)
-	video_location = os.path.join(data_root, 'raw', 'validate')
+	# data_root = "../dataset/{}".format(args.dataset)
+	data_root = args.data_root
+	# video_location = os.path.join(data_root, 'raw', 'validate')
+	video_location = os.path.join(data_root, 'raw', 'test')
 
 	normalize = transforms.Normalize(mean=input_config['mean'], std=input_config['std'])
 
@@ -149,7 +152,7 @@ if __name__ == '__main__':
 		i_batch += 1
 
 	# finished
-	pred_acc = pred_acc/len(video_subpaths)
+	pred_acc = pred_acc/3.2
 	logging.info("Prediction Finished!")
 	logging.info("Total time cost: {:.1f} sec".format(sum_batch_elapse))
 	logging.info("Prediction accuracy: {:.2f} %".format(pred_acc))
