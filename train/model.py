@@ -93,9 +93,11 @@ class static_model(object):
 		if not optimizer_state:
 			torch.save({'epoch': epoch, 'state_dict': self.net.state_dict()}, save_path)
 			logging.info("Checkpoint (only model) saved to: {}".format(save_path))
+			# torch.save(save_path)
 		else:
 			torch.save({'epoch': epoch, 'state_dict': self.net.state_dict(), 'optimizer': optimizer_state}, save_path)
 			logging.info("Checkpoint (model & optimizer) saved to: {}".format(save_path))
+			# torch.save(save_path)
 
 
 	def forward(self, data, target):

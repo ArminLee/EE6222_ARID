@@ -65,7 +65,7 @@ def autofill(args):
 		else:
 			args.log_file = ".{}_at-{}.log".format(args.task_name, socket.gethostname())
 	# fixed
-	args.model_prefix = os.path.join(args.model_dir, args.task_name)
+	args.model_prefix = os.path.join(args.model_dir, args.task_name, args.task_name)
 	return args
 
 def set_logger(log_file='', debug_mode=False):
