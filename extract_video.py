@@ -3,8 +3,8 @@ import cv2
 
 
 def save_img():  # 提取视频中图片 按照每帧提取
-    video_path = '/home/ymli/Programs/Course/6222/VRT/testsets/Test/'  # 视频所在的路径
-    f_save_path = '/home/ymli/Programs/Course/6222/VRT/testsets/Test/'  # 保存图片的上级目录
+    video_path = '/home/ymli/Programs/Course/6222/Baseline/dataset/Demo/dark/'  # 视频所在的路径
+    f_save_path = '/home/ymli/Programs/Course/6222/Baseline/dataset/Demo/dark/'  # 保存图片的上级目录
     videos = os.listdir(video_path)  # 返回指定路径下的文件和文件夹列表。
     for video_name in videos:  # 依次读取视频文件
         file_name = video_name.split('.')[0]  # 拆分视频文件名称 ，剔除后缀
@@ -25,7 +25,8 @@ def save_img():  # 提取视频中图片 按照每帧提取
             pic_path = folder_name + '/'
             if rval:
                 num = '%03d' % (c+1)
-                cv2.imwrite(pic_path + str(num) + '.png', frame)  # 存储为图像,保存名为 文件夹名_数字（第几个文件）.jpg
+                # cv2.imwrite(pic_path + str(num) + '.jpg', frame)
+                cv2.imwrite(pic_path + file_name + '_' + str(c) + '.jpg', frame)# 存储为图像,保存名为 文件夹名_数字（第几个文件）.jpg
             cv2.waitKey(1)  # waitKey()--这个函数是在一个给定的时间内(单位ms)等待用户按键触发;如果用户没有按下 键,则接续等待(循环)
             c = c + 1
         vc.release()
